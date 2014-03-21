@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 
 var BABYLON = BABYLON || {};
 
@@ -339,10 +339,13 @@ var BABYLON = BABYLON || {};
         return camera;
     };
 
-    var parseMesh = function (parsedMesh, scene, rootUrl) {
-        var mesh = new BABYLON.Mesh(parsedMesh.name, scene);
-        mesh.id = parsedMesh.id;
-
+    var parseMesh = function (parsedMesh, mesh, scene, rootUrl) {       
+        
+        // Parent
+        if (parsedMesh.parentId) {
+            mesh.parent = scene.getLastEntryByID(parsedMesh.parentId);
+        }
+        
         mesh.position = BABYLON.Vector3.FromArray(parsedMesh.position);
         if (parsedMesh.rotation) {
             mesh.rotation = BABYLON.Vector3.FromArray(parsedMesh.rotation);
@@ -369,11 +372,6 @@ var BABYLON = BABYLON || {};
 
         mesh.checkCollisions = parsedMesh.checkCollisions;
         mesh._shouldGenerateFlatShading = parsedMesh.useFlatShading;
-
-        // Parent
-        if (parsedMesh.parentId) {
-            mesh._waitingParentId = scene.getLastEntryByID(parsedMesh.parentId);
-        }
 
         // Geometry
         if (parsedMesh.delayLoadingFile) {
@@ -709,12 +707,20 @@ var BABYLON = BABYLON || {};
                 }
             }
 
-            // Meshes
+            var meshes = [];
+            // Init meshes
             for (var index = 0; index < parsedData.meshes.length; index++) {
                 var parsedMesh = parsedData.meshes[index];
-                parseMesh(parsedMesh, scene, rootUrl);
+                var mesh = new BABYLON.Mesh(parsedMesh.name, scene);
+                mesh.id = parsedMesh.id;
+                meshes.push(mesh);
             }
-            
+            // Parse meshes
+            for (var index = 0; index < meshes.length; index++) {
+                var mesh = meshes[index];
+                var parsedMesh = parsedData.meshes[index];
+                parseMesh(parsedMesh, mesh, scene, rootUrl);
+            }
 
             // Connecting cameras parents and locked target
             for (var index = 0; index < scene.cameras.length; index++) {
@@ -728,16 +734,7 @@ var BABYLON = BABYLON || {};
                     camera.lockedTarget = scene.getLastEntryByID(camera._waitingLockedTargetId);
                     delete camera._waitingLockedTargetId;
                 }
-            }
-            
-            // Mesh parenting
-            for (var index = 0; index < scene.meshes.length; index++) {
-                var mesh = scene.meshes[index];
-                if (mesh._waitingParentId) {
-                    mesh.parent = scene.getLastEntryByID(mesh._waitingParentId);
-                    delete mesh._waitingParentId;
-                }
-            }
+            }            
 
             // Particles Systems
             if (parsedData.particleSystems) {
