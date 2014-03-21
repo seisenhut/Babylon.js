@@ -49,7 +49,7 @@ var BABYLON = BABYLON || {};
     BABYLON.Camera.prototype.minZ = 0.1;
     BABYLON.Camera.prototype.maxZ = 1000.0;
     BABYLON.Camera.prototype.inertia = 0.9;
-    BABYLON.Camera.prototype.mode = BABYLON.Camera.PERSPECTIVE_CAMERA;
+    BABYLON.Camera.prototype.mode = BABYLON.Camera.PERSPECTIVE_CAMERA;    
 
     // Properties
     BABYLON.Camera.prototype.getScene = function () {

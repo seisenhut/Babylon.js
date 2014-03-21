@@ -289,7 +289,7 @@ var BABYLON = BABYLON || {};
         light.specular = BABYLON.Color3.FromArray(parsedLight.specular);
     };
 
-    var parseCamera = function (parsedCamera, scene) {
+    var parseCamera = function (parsedCamera, scene, camera) {
         // Parent
         if (parsedCamera.parentId) {
             camera.parent = scene.getLastEntryByID(parsedCamera.parentId);
@@ -678,6 +678,7 @@ var BABYLON = BABYLON || {};
                 var parsedCamera = parsedData.cameras[index];
                 var camera = new BABYLON.FreeCamera(parsedCamera.name, BABYLON.Vector3.Zero(), scene);
                 camera.id = parsedCamera.id;
+                cameras.push(camera);                
             }
 
             if (parsedData.activeCameraID) {
@@ -725,7 +726,7 @@ var BABYLON = BABYLON || {};
             // Connecting cameras parents and locked target
             for (var index = 0; index < cameras.length; index++) {
                 var camera = cameras[index];
-                parseCamera(parsedCamera, scene);
+                parseCamera(parsedCamera, scene, camera);
             }            
 
             // Particles Systems
