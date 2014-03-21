@@ -295,6 +295,7 @@ var BABYLON = BABYLON || {};
             camera.parent = scene.getLastEntryByID(parsedCamera.parentId);
         }
 
+        camera.position = BABYLON.Vector3.FromArray(parsedCamera.position);
         // Target
         if (parsedCamera.target) {
             camera.setTarget(BABYLON.Vector3.FromArray(parsedCamera.target));
