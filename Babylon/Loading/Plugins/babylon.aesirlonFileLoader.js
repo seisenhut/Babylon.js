@@ -290,12 +290,9 @@ var BABYLON = BABYLON || {};
     };
 
     var parseCamera = function (parsedCamera, scene) {
-        var camera = new BABYLON.FreeCamera(parsedCamera.name, BABYLON.Vector3.FromArray(parsedCamera.position), scene);
-        camera.id = parsedCamera.id;
-
         // Parent
         if (parsedCamera.parentId) {
-            camera._waitingParentId = parsedCamera.parentId;
+            camera.parent = scene.getLastEntryByID(parsedCamera.parentId);
         }
 
         // Target
@@ -307,7 +304,7 @@ var BABYLON = BABYLON || {};
 
         // Locked target
         if (parsedCamera.lockedTargetId) {
-            camera._waitingLockedTargetId = parsedCamera.lockedTargetId;
+            camera.lockedTarget = scene.getLastEntryByID(camera._waitingLockedTargetId);
         }
 
         camera.fov = parsedCamera.fov;
@@ -674,10 +671,12 @@ var BABYLON = BABYLON || {};
                 parseLight(parsedLight, scene);
             }
 
+            var cameras = [];
             // Cameras
             for (var index = 0; index < parsedData.cameras.length; index++) {
                 var parsedCamera = parsedData.cameras[index];
-                parseCamera(parsedCamera, scene);
+                var camera = new BABYLON.FreeCamera(parsedCamera.name, BABYLON.Vector3.Zero(), scene);
+                camera.id = parsedCamera.id;
             }
 
             if (parsedData.activeCameraID) {
@@ -723,17 +722,9 @@ var BABYLON = BABYLON || {};
             }
 
             // Connecting cameras parents and locked target
-            for (var index = 0; index < scene.cameras.length; index++) {
-                var camera = scene.cameras[index];
-                if (camera._waitingParentId) {
-                    camera.parent = scene.getLastEntryByID(camera._waitingParentId);
-                    delete camera._waitingParentId;
-                }
-
-                if (camera._waitingLockedTargetId) {
-                    camera.lockedTarget = scene.getLastEntryByID(camera._waitingLockedTargetId);
-                    delete camera._waitingLockedTargetId;
-                }
+            for (var index = 0; index < cameras.length; index++) {
+                var camera = cameras[index];
+                parseCamera(parsedCamera, scene);
             }            
 
             // Particles Systems
