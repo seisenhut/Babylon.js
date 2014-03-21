@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <files xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="babylonJS.xsd">
-  <script src="Babylon/Cameras/Controllers/babylon.inputController.js"></script>
   <script src="Babylon/PostProcess/babylon.oculusDistortionCorrectionPostProcess.js"></script>
   <script src="Babylon/Tools/babylon.virtualJoystick.js"></script>
   <script src="Babylon/Cameras/Controllers/babylon.oculusController.js"></script>
   <script src="Babylon/Cameras/babylon.oculusOrientedCamera.js"></script>
   <script src="Babylon/Cameras/babylon.virtualJoysticksCamera.js"></script>
   <script src="Babylon/Cameras/Controllers/babylon.keyboardMoveController.js"></script>
+  <script src="Babylon/Cameras/Controllers/babylon.inputController.js"></script>
   <script src="Babylon/Mesh/babylon.csg.js"></script>
   <script src="Babylon/Tools/babylon.sceneSerializer.js"></script>
   <script src="Babylon/Physics/babylon.physicsEngine.js"></script>
@@ -32,9 +32,11 @@
   <script src="Babylon/Particles/babylon.particleSystem.js"></script>
   <script src="Babylon/Particles/babylon.particle.js"></script>
   <script src="Babylon/Layer/babylon.layer.js"></script>
+  <script src="Babylon/Sprites/babylon.spriteAnimation.js"></script>
   <script src="Babylon/Sprites/babylon.sprite.js"></script>
   <script src="Babylon/Sprites/babylon.spriteManager.js"></script>
-  <script src="Babylon/Loading/Plugins/babylon.babylonFileLoader.js"></script>
+  <script src="Babylon/Loading/Plugins/babylon.aesirlonFileLoader.js"></script>
+  <script src="Babylon/Loading/Plugins/babylon.babylonFileLoader.js"></script>  
   <script src="Babylon/Loading/babylon.sceneLoader.js"></script>
   <script src="Babylon/Tools/babylon.database.js"></script>
   <script src="Babylon/Materials/babylon.multiMaterial.js"></script>
@@ -61,7 +63,7 @@
   <script src="Babylon/Cameras/babylon.camera.js"></script>
   <script src="Babylon/Collisions/babylon.collider.js"></script>
   <script src="Babylon/Lights/babylon.hemisphericLight.js"></script>
-  <script src="Babylon/Lights//Shadows/babylon.shadowGenerator.js"></script>
+  <script src="Babylon/Lights/Shadows/babylon.shadowGenerator.js"></script>
   <script src="Babylon/Lights/babylon.directionalLight.js"></script>
   <script src="Babylon/Lights/babylon.spotlight.js"></script>
   <script src="Babylon/Lights/babylon.pointLight.js"></script>
