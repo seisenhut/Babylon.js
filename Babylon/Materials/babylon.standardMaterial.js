@@ -349,7 +349,7 @@ var BABYLON = BABYLON || {};
 
         this._effect.setVector3("vEyePosition", this._scene.activeCamera.position);
         this._effect.setColor3("vAmbientColor", this._globalAmbientColor);
-        this._effect.setColor4("vDiffuseColor", this._baseColor, this.alpha * mesh.visibility);
+        this._effect.setColor4("vDiffuseColor", this.diffuseColor, this.alpha * mesh.visibility);
         this._effect.setColor4("vSpecularColor", this.specularColor, this.specularPower);
         this._effect.setColor3("vEmissiveColor", this.emissiveColor);
 

@@ -7,6 +7,7 @@ var BABYLON = BABYLON || {};
         this.name = name;
         this._capacity = capacity;
         this.cellSize = cellSize;
+        this.animations = null;
         this._spriteTexture = new BABYLON.Texture(imgUrl, scene, true, false);
         this._spriteTexture.wrapU = BABYLON.Texture.CLAMP_ADDRESSMODE;
         this._spriteTexture.wrapV = BABYLON.Texture.CLAMP_ADDRESSMODE;

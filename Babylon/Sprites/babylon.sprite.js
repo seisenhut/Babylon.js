@@ -44,6 +44,19 @@ var BABYLON = BABYLON || {};
         this.cellIndex = from;
         this._time = 0;
     };
+    
+    BABYLON.Sprite.prototype.playNamedAnimation = function(name) {
+        if (!this._manager.animations)
+            return;
+        
+        for (var i = 0; i < this._animations.length; i++) {
+            if (this._manager.animations[i].name === name) {
+                this.playAnimation(this._manager.animations[i].cellFrom, 
+                    this._manager.animations[i].cellTo,
+                    this._manager.animations[i].loop, 0);
+            }
+        }
+    };
 
     BABYLON.Sprite.prototype.stopAnimation = function () {
         this._animationStarted = false;
