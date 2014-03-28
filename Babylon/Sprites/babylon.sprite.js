@@ -49,11 +49,12 @@ var BABYLON = BABYLON || {};
         if (!this._manager.animations)
             return;
         
-        for (var i = 0; i < this._animations.length; i++) {
+        for (var i = 0; i < this._manager.animations.length; i++) {
             if (this._manager.animations[i].name === name) {
                 this.playAnimation(this._manager.animations[i].cellFrom, 
                     this._manager.animations[i].cellTo,
-                    this._manager.animations[i].loop, 0);
+                    this._manager.animations[i].loop, 
+					this._manager.animations[i].delay);
             }
         }
     };

@@ -537,14 +537,14 @@ var BABYLON = BABYLON || {};
     };
     
     var parseSpriteManager = function(parsedSpriteManager, scene, rootUrl) {
-        var spriteManager = new BABYLON.SpriteManager(parsedSpriteManager.name, rootUrl + parsedSpriteManager.textureName, parsedSpriteManager.capacity, parsedSpriteManager.cellSize, scene, parsedSpriteManager.epsilon);
+        var spriteManager = new BABYLON.SpriteManager(parsedSpriteManager.name, rootUrl + parsedSpriteManager.textureName, parsedSpriteManager.capacity, parsedSpriteManager.cellSize, scene);
         
         if (parsedSpriteManager.animations) {
             var numAnimations = parsedSpriteManager.animations.length;
             spriteManager.animations = [];
             for (var i = 0; i < numAnimations; i++) {
                 var parsedAnimation = parsedSpriteManager.animations[i];
-                var animation = new BABYLON.SpriteAnimation(parsedAnimation.name, parsedAnimation.cellFrom, parsedAnimation.cellTo, parsedAnimation.loop);
+                var animation = new BABYLON.SpriteAnimation(parsedAnimation.name, parsedAnimation.cellFrom, parsedAnimation.cellTo, parsedAnimation.loop, parsedAnimation.delay);
                 spriteManager.animations.push(animation);
             }
         }
@@ -557,7 +557,7 @@ var BABYLON = BABYLON || {};
                 sprite.angle = parsedSprite.angle;
                 sprite.invertU = parsedSprite.invertU;
                 sprite.invertV = parsedSprite.invertV;
-                sprite.color = BABYLON.Color3.FromArray(parsedSprite.color);
+                sprite.color = BABYLON.Color4.FromArray(parsedSprite.color);
                 sprite.cellIndex = parsedSprite.cellIndex;
                 sprite.size = parsedSprite.size;
                 
