@@ -961,6 +961,25 @@ var BABYLON = BABYLON || {};
 
         return result;
     };
+    BABYLON.Quaternion.prototype.multiplyVector = function (vec) {
+        var num = this.x * 2.0;
+        var num2 = this.y * 2.0;
+        var num3 = this.z * 2.0;
+        var num4 = this.x * num;
+        var num5 = this.y * num2;
+        var num6 = this.z * num3;
+        var num7 = this.x * num2;
+        var num8 = this.x * num3;
+        var num9 = this.y * num3;
+        var num10 = this.w * num;
+        var num11 = this.w * num2;
+        var num12 = this.w * num3;
+        var result = new BABYLON.Vector3(0,0,0);
+        result.x = (1.0 - (num5 + num6)) * vec.x + (num7 - num12) * vec.y + (num8 + num11) * vec.z;
+        result.y = (num7 + num12) * vec.x + (1.0 - (num4 + num6)) * vec.y + (num9 - num10) * vec.z;
+        result.z = (num8 - num11) * vec.x + (num9 + num10) * vec.y + (1.0 - (num4 + num5)) * vec.z;
+        return result;
+    };
 
     BABYLON.Quaternion.prototype.multiplyToRef = function (q1, result) {
         result.x = this.x * q1.w + this.y * q1.z - this.z * q1.y + this.w * q1.x;
