@@ -5,7 +5,7 @@ var BABYLON = BABYLON || {};
 (function () {
     BABYLON._Animatable = function (target, from, to, loop, speedRatio, onAnimationEnd, name) {
         this.target = target;
-        this.fromFrame = from || 0;
+        this.fromFrame = from;
         this.toFrame = to;
         this.loopAnimation = loop;
         this.speedRatio = speedRatio ? speedRatio : 1.0;
@@ -17,7 +17,7 @@ var BABYLON = BABYLON || {};
 			var frameHigh = 0;
 			for (var index = 0; index < animations.length; index++) {
 				if (this.name === animations[index].name) {
-					frameHigh = Math.max(frameHigh, animations[index].getFrameCount() - 1);
+					frameHigh = Math.max(frameHigh, animations[index].getFrameCount());
 				}
 			}
 			this.toFrame = frameHigh;
@@ -44,7 +44,8 @@ var BABYLON = BABYLON || {};
         var animations = this.target.animations;
         for (var index = 0; index < animations.length; index++) {
 			if (!this.name || this.name === animations[index].name) {
-				running = running || animations[index].animate(this.target, delay - this._localDelayOffset, this.fromFrame, this.toFrame, this.loopAnimation, this.speedRatio);
+				var isRunning = animations[index].animate(this.target, delay - this._localDelayOffset, this.fromFrame, this.toFrame, this.loopAnimation, this.speedRatio);
+				running = running || isRunning;
 			}
         }
 
