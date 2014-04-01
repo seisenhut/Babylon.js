@@ -268,6 +268,29 @@ var BABYLON = BABYLON || {};
         }
 
     };
+	
+	BABYLON.Scene.prototype.beginNamedAnimation = function (target, name, loop, speedRatio, onAnimationEnd) {
+		if (speedRatio === undefined) {
+			speedRatio = 1.0;
+		}
+		
+		 // Local animations
+        if (target.animations) {
+            this.stopAnimation(target);
+
+            var animatable = new BABYLON._Animatable(target, 0, 0, loop, speedRatio, onAnimationEnd, name);
+
+            this._activeAnimatables.push(animatable);
+        }
+
+        // Children animations
+        if (target.getAnimatables) {
+            var animatables = target.getAnimatables();
+            for (var index = 0; index < animatables.length; index++) {
+                this.beginNamedAnimation(animatables[index], 0, 0, loop, speedRatio, onAnimationEnd, name);
+            }
+        }
+	};
 
     BABYLON.Scene.prototype.stopAnimation = function (target) {
         // Local animations

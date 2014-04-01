@@ -44,6 +44,10 @@ var BABYLON = BABYLON || {};
         this._offsetsCache = {};
         this._highLimitsCache = {};
     };
+	
+	BABYLON.Animation.prototype.getFrameCount = function () {
+		return this._keys[this._keys.length - 1].frame;
+	};
 
     BABYLON.Animation.prototype._interpolate = function (currentFrame, repeatCount, loopMode, offsetValue, highLimitValue) {
         if (loopMode === BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT && repeatCount > 0) {
