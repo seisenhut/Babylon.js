@@ -331,7 +331,7 @@ var BABYLON = BABYLON || {};
         }
 
         if (parsedCamera.autoAnimate) {
-            scene.beginAnimation(camera, parsedCamera.autoAnimateFrom, parsedCamera.autoAnimateTo, parsedCamera.autoAnimateLoop, 1.0);
+            scene.beginNamedAnimation(camera, parsedCamera.autoAnimateClip, parsedCamera.autoAnimateLoop, 1.0);
         }
 
         return camera;
@@ -442,7 +442,7 @@ var BABYLON = BABYLON || {};
         }
 
         if (parsedMesh.autoAnimate) {
-            scene.beginAnimation(mesh, parsedMesh.autoAnimateFrom, parsedMesh.autoAnimateTo, parsedMesh.autoAnimateLoop, 1.0);
+            scene.beginNamedAnimation(mesh, parsedMesh.autoAnimateClip, parsedMesh.autoAnimateLoop, 1.0);
         }
 
         return mesh;
