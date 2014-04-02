@@ -150,7 +150,7 @@ var BABYLON = BABYLON || {};
         serializationObject.diffuse = material.diffuseColor.asArray();
         serializationObject.specular = material.specularColor.asArray();
         serializationObject.specularPower = material.specularPower;
-        serializationObject.emissive = material.emissiveColor.asArray();
+        serializationObject.emissive = material.emissiveColor.asArray();        
 
         serializationObject.alpha = material.alpha;
 

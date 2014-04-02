@@ -88,13 +88,22 @@ var BABYLON = BABYLON || {};
 
     var parseMaterial = function (parsedMaterial, scene, rootUrl) {
         var material;
-        material = new BABYLON.StandardMaterial(parsedMaterial.name, scene);
+        if (parsedMaterial.shader == 'AI/PhysicallyBased Default') {
+            Ajine.Log("Creating PBS material");
+            material = new PBSMaterial(parsedMaterial.name, scene);
+            material.Roughness = parsedMaterial.roughness;
+        }
+        else {
+            Ajine.Log("Creating standard material");
+            material = new BABYLON.StandardMaterial(parsedMaterial.name, scene);
+        }
+        Ajine.Log(parsedMaterial);
 
         material.ambientColor = BABYLON.Color3.FromArray(parsedMaterial.ambient);
         material.diffuseColor = BABYLON.Color3.FromArray(parsedMaterial.diffuse);
         material.specularColor = BABYLON.Color3.FromArray(parsedMaterial.specular);
         material.specularPower = parsedMaterial.specularPower;
-        material.emissiveColor = BABYLON.Color3.FromArray(parsedMaterial.emissive);
+        material.emissiveColor = BABYLON.Color3.FromArray(parsedMaterial.emissive);        
 
         material.alpha = parsedMaterial.alpha;
 
