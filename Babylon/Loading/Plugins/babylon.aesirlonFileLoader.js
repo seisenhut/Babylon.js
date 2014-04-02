@@ -4,7 +4,7 @@ var BABYLON = BABYLON || {};
 
 (function () {
     var loadCubeTexture = function (rootUrl, parsedTexture, scene) {
-        var texture = new BABYLON.CubeTexture(rootUrl + parsedTexture.name, scene);
+        var texture = new BABYLON.CubeTexture(rootUrl + parsedTexture.name, scene, ["_px.png", "_py.png", "_pz.png", "_nx.png", "_ny.png", "_nz.png"]);
 
         texture.name = parsedTexture.name;
         texture.hasAlpha = parsedTexture.hasAlpha;
@@ -88,16 +88,14 @@ var BABYLON = BABYLON || {};
 
     var parseMaterial = function (parsedMaterial, scene, rootUrl) {
         var material;
-        if (parsedMaterial.shader == 'AI/PhysicallyBased Default') {
-            Ajine.Log("Creating PBS material");
+        if (parsedMaterial.shader == 'AI/PhysicallyBased Default' || 
+            parsedMaterial.shader == 'AI/PhysicallyBased Default Transparent') {            
             material = new PBSMaterial(parsedMaterial.name, scene);
             material.Roughness = parsedMaterial.roughness;
-        }
+        }        
         else {
-            Ajine.Log("Creating standard material");
             material = new BABYLON.StandardMaterial(parsedMaterial.name, scene);
-        }
-        Ajine.Log(parsedMaterial);
+        }        
 
         material.ambientColor = BABYLON.Color3.FromArray(parsedMaterial.ambient);
         material.diffuseColor = BABYLON.Color3.FromArray(parsedMaterial.diffuse);
