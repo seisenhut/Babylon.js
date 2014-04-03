@@ -88,8 +88,8 @@ var BABYLON = BABYLON || {};
 
     var parseMaterial = function (parsedMaterial, scene, rootUrl) {
         var material;
-        if (parsedMaterial.shader == 'AI/PhysicallyBased Default' || 
-            parsedMaterial.shader == 'AI/PhysicallyBased Default Transparent') {            
+        if (parsedMaterial.shader == 'Aesir/Physical/Default' || 
+            parsedMaterial.shader == 'Aesir/Physical/Transparent') {            
             material = new PBSMaterial(parsedMaterial.name, scene);
             material.Roughness = parsedMaterial.roughness;
         }        
