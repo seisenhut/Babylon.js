@@ -13,6 +13,20 @@ var BABYLON = BABYLON || {};
         return path.substring(index + 1);
     };
 
+    BABYLON.Tools.GetDOMTextContent = function(element) {
+        var result = "";
+        var child = element.firstChild;
+
+        while (child) {
+            if (child.nodeType == 3) {
+                result += child.textContent;
+            }
+            child = child.nextSibling;
+        }
+
+        return result;
+    };
+
     BABYLON.Tools.ToDegrees = function(angle) {
         return angle * 180 / Math.PI;
     };
@@ -36,6 +50,13 @@ var BABYLON = BABYLON || {};
             minimum: minimum,
             maximum: maximum
         };
+    };
+	
+	BABYLON.Tools.MakeArray = function (obj, allowsNullUndefined) {
+		if (allowsNullUndefined !== true && (obj === undefined || obj == null))
+			return undefined;
+
+		return Array.isArray(obj) ? obj : [obj];
     };
 
     // Smart array
@@ -326,6 +347,13 @@ var BABYLON = BABYLON || {};
                 destination[prop] = sourceValue;
             }
         }
+    };
+
+    BABYLON.Tools.IsEmpty = function (obj) {
+        for (var i in obj) {
+            return false;
+        }
+        return true;
     };
 
     // FPS

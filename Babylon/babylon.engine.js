@@ -4,6 +4,7 @@ var BABYLON = BABYLON || {};
 
 (function () {
     BABYLON.Engine = function (canvas, antialias, options) {
+        var that = this;
         this._renderingCanvas = canvas;
 
         options = options || {};
@@ -20,9 +21,22 @@ var BABYLON = BABYLON || {};
             throw new Error("WebGL not supported");
         }
 
+        this._windowIsBackground = false;
+        this._onBlur = function () {
+            that._windowIsBackground = true;
+        };
+
+        this._onFocus = function () {
+            that._windowIsBackground = false;
+        };
+
+        window.addEventListener("blur", this._onBlur);
+        window.addEventListener("focus", this._onFocus);
+
         // Options
         this.forceWireframe = false;
         this.cullBackFaces = true;
+        this.renderEvenInBackground = true;
 
         // Scenes
         this.scenes = [];
@@ -44,7 +58,7 @@ var BABYLON = BABYLON || {};
 
         // Extensions
         this._caps.standardDerivatives = (this._gl.getExtension('OES_standard_derivatives') !== null);
-        this._caps.s3tc = this._gl.getExtension('WEBGL_compressed_texture_s3tc') ;
+        this._caps.s3tc = this._gl.getExtension('WEBGL_compressed_texture_s3tc');
         this._caps.textureFloat = (this._gl.getExtension('OES_texture_float') !== null);        
         this._caps.textureAnisotropicFilterExtension = this._gl.getExtension('EXT_texture_filter_anisotropic') || this._gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic') || this._gl.getExtension('MOZ_EXT_texture_filter_anisotropic');
         this._caps.maxAnisotropy = this._caps.textureAnisotropicFilterExtension ? this._gl.getParameter(this._caps.textureAnisotropicFilterExtension.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 0;
@@ -64,9 +78,8 @@ var BABYLON = BABYLON || {};
 
         // Fullscreen
         this.isFullscreen = false;
-        var that = this;
 
-        var onFullscreenChange = function () {
+        this._onFullscreenChange = function () {
             if (document.fullscreen !== undefined) {
                 that.isFullscreen = document.fullscreen;
             } else if (document.mozFullScreen !== undefined) {
@@ -90,15 +103,15 @@ var BABYLON = BABYLON || {};
             }
         };
 
-        document.addEventListener("fullscreenchange", onFullscreenChange, false);
-        document.addEventListener("mozfullscreenchange", onFullscreenChange, false);
-        document.addEventListener("webkitfullscreenchange", onFullscreenChange, false);
-        document.addEventListener("msfullscreenchange", onFullscreenChange, false);
+        document.addEventListener("fullscreenchange", this._onFullscreenChange, false);
+        document.addEventListener("mozfullscreenchange", this._onFullscreenChange, false);
+        document.addEventListener("webkitfullscreenchange", this._onFullscreenChange, false);
+        document.addEventListener("msfullscreenchange", this._onFullscreenChange, false);
 
         // Pointer lock
         this.isPointerLock = false;
 
-        var onPointerLockChange = function () {
+        this._onPointerLockChange = function () {
             that.isPointerLock = (document.mozPointerLockElement === canvas ||
                                   document.webkitPointerLockElement === canvas ||
                                   document.msPointerLockElement === canvas ||
@@ -106,10 +119,10 @@ var BABYLON = BABYLON || {};
             );
         };
 
-        document.addEventListener("pointerlockchange", onPointerLockChange, false);
-        document.addEventListener("mspointerlockchange", onPointerLockChange, false);
-        document.addEventListener("mozpointerlockchange", onPointerLockChange, false);
-        document.addEventListener("webkitpointerlockchange", onPointerLockChange, false);
+        document.addEventListener("pointerlockchange", this._onPointerLockChange, false);
+        document.addEventListener("mspointerlockchange", this._onPointerLockChange, false);
+        document.addEventListener("mozpointerlockchange", this._onPointerLockChange, false);
+        document.addEventListener("webkitpointerlockchange", this._onPointerLockChange, false);
     };
 
     // Properties
@@ -154,15 +167,22 @@ var BABYLON = BABYLON || {};
     };
 
     BABYLON.Engine.prototype._renderLoop = function () {
-        // Start new frame
-        this.beginFrame();
-
-        if (this._renderFunction) {
-            this._renderFunction();
+        var shouldRender = true;
+        if (!this.renderEvenInBackground && this._windowIsBackground) {
+            shouldRender = false;
         }
 
-        // Present
-        this.endFrame();
+        if (shouldRender) {
+            // Start new frame
+            this.beginFrame();
+
+            if (this._renderFunction) {
+                this._renderFunction();
+            }
+
+            // Present
+            this.endFrame();
+        }
 
         if (this._runningLoop) {
             // Register new frame
@@ -369,8 +389,8 @@ var BABYLON = BABYLON || {};
 
     // Shaders
     BABYLON.Engine.prototype.createEffect = function (baseName, attributesNames, uniformsNames, samplers, defines, optionalDefines) {
-        var vertex = baseName.vertex || baseName;
-        var fragment = baseName.fragment || baseName;
+        var vertex = baseName.vertexElement || baseName.vertex || baseName;
+        var fragment = baseName.fragmentElement || baseName.fragment || baseName;
         
         var name = vertex + "+" + fragment + "@" + defines;
         if (this._compiledEffects[name]) {
@@ -733,9 +753,9 @@ var BABYLON = BABYLON || {};
         texture.isReady = true;
     };
 
-    BABYLON.Engine.prototype.updateVideoTexture = function (texture, video) {
+    BABYLON.Engine.prototype.updateVideoTexture = function (texture, video, invertY) {
         this._gl.bindTexture(this._gl.TEXTURE_2D, texture);
-        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, false);
+        this._gl.pixelStorei(this._gl.UNPACK_FLIP_Y_WEBGL, invertY ? false : true); // Video are upside down by default
 
         // Scale the video if it is a NPOT
         if (video.videoWidth !== texture._width || video.videoHeight !== texture._height) {
@@ -865,7 +885,7 @@ var BABYLON = BABYLON || {};
         scene._addPendingData(img);
     };
 
-    BABYLON.Engine.prototype.createCubeTexture = function (rootUrl, scene, extensions) {
+    BABYLON.Engine.prototype.createCubeTexture = function (rootUrl, scene, extensions, noMipmap) {
         var gl = this._gl;
 
         var texture = gl.createTexture();
@@ -895,9 +915,12 @@ var BABYLON = BABYLON || {};
                 gl.texImage2D(faces[index], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, that._workingCanvas);
             }
 
-            gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+            if (!noMipmap) {
+                gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+            }
+            
             gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+            gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, noMipmap ? gl.LINEAR : gl.LINEAR_MIPMAP_LINEAR);
             gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
@@ -1063,6 +1086,18 @@ var BABYLON = BABYLON || {};
         for (var name in this._compiledEffects.length) {
             this._gl.deleteProgram(this._compiledEffects[name]._program);
         }
+
+        // Events
+        window.removeEventListener("blur", this._onBlur);
+        window.removeEventListener("focus", this._onFocus);
+        document.removeEventListener("fullscreenchange", this._onFullscreenChange);
+        document.removeEventListener("mozfullscreenchange", this._onFullscreenChange);
+        document.removeEventListener("webkitfullscreenchange", this._onFullscreenChange);
+        document.removeEventListener("msfullscreenchange", this._onFullscreenChange);
+        document.removeEventListener("pointerlockchange", this._onPointerLockChange);
+        document.removeEventListener("mspointerlockchange", this._onPointerLockChange);
+        document.removeEventListener("mozpointerlockchange", this._onPointerLockChange);
+        document.removeEventListener("webkitpointerlockchange", this._onPointerLockChange);
     };
 
     // Statics

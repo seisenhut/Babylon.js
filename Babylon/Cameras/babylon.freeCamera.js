@@ -72,10 +72,12 @@ var BABYLON = BABYLON || {};
             this._cache.lockedTarget = null;
         }
         else {
-            if (!this._cache.lockedTarget)
+            if (!this._cache.lockedTarget) {
                 this._cache.lockedTarget = lockedTargetPosition.clone();
-            else
+            }
+            else {
                 this._cache.lockedTarget.copyFrom(lockedTargetPosition);
+            }
         }
 
         this._cache.rotation.copyFrom(this.rotation);
@@ -128,6 +130,10 @@ var BABYLON = BABYLON || {};
         if (isNaN(this.rotation.z)) {
             this.rotation.z = 0;
         }
+    };
+
+    BABYLON.FreeCamera.prototype.getTarget = function () {
+        return this._currentTarget;
     };
 
     // Controls
