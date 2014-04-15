@@ -39,8 +39,10 @@
   <script src="Babylon/Particles/babylon.particleSystem.js"></script>
   <script src="Babylon/Particles/babylon.particle.js"></script>
   <script src="Babylon/Layer/babylon.layer.js"></script>
+  <script src="Babylon/Sprites/babylon.spriteAnimation.js"></script>
   <script src="Babylon/Sprites/babylon.sprite.js"></script>
   <script src="Babylon/Sprites/babylon.spriteManager.js"></script>
+  <script src="Babylon/Loading/Plugins/babylon.aesirlonFileLoader.js"></script>
   <script src="Babylon/Loading/Plugins/babylon.babylonFileLoader.js"></script>
   <script src="Babylon/Loading/babylon.sceneLoader.js"></script>
   <script src="Babylon/Tools/babylon.database.js"></script>
